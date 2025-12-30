@@ -24,7 +24,11 @@ def index():
     # List uploaded files
     files = []
     if os.path.exists(app.config['UPLOAD_FOLDER']):
-        files = os.listdir(app.config['UPLOAD_FOLDER'])
+        try:
+            files = os.listdir(app.config['UPLOAD_FOLDER'])
+        except (PermissionError, OSError) as e:
+            flash('Error loading file list')
+            app.logger.error(f'Error listing files: {e}')
     return render_template('index.html', files=files)
 
 @app.route('/upload', methods=['POST'])
@@ -54,7 +58,9 @@ def upload_file():
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    # Prevent path traversal attacks by ensuring only the filename is used
+    safe_filename = os.path.basename(filename)
+    return send_from_directory(app.config['UPLOAD_FOLDER'], safe_filename)
 
 if __name__ == '__main__':
     debug_mode = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
