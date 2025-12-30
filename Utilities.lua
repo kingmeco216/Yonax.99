@@ -41,11 +41,17 @@ function Utilities.setWalkSpeed(speed)
     return false
 end
 
--- Jump power modification
+-- Jump power/height modification
 function Utilities.setJumpPower(power)
     local player = game:GetService("Players").LocalPlayer
     if player.Character and player.Character:FindFirstChild("Humanoid") then
-        player.Character.Humanoid.JumpPower = power
+        local humanoid = player.Character.Humanoid
+        -- Use JumpHeight if available (newer), otherwise fall back to JumpPower
+        if humanoid:FindFirstChild("JumpHeight") or humanoid.UseJumpHeight then
+            humanoid.JumpHeight = power
+        else
+            humanoid.JumpPower = power
+        end
         return true
     end
     return false
@@ -54,11 +60,19 @@ end
 -- Notification system
 function Utilities.notify(title, text, duration)
     duration = duration or 5
-    game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = title,
-        Text = text,
-        Duration = duration
-    })
+    local success, error = pcall(function()
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = title,
+            Text = text,
+            Duration = duration
+        })
+    end)
+    
+    if not success then
+        warn("Failed to send notification: " .. tostring(error))
+    end
+    
+    return success
 end
 
 -- Find nearest player
