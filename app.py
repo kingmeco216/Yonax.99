@@ -60,6 +60,11 @@ def upload_file():
 def uploaded_file(filename):
     # Prevent path traversal attacks by ensuring only the filename is used
     safe_filename = os.path.basename(filename)
+    # Verify the file actually exists in the uploads directory
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], safe_filename)
+    if not os.path.exists(file_path) or not os.path.isfile(file_path):
+        flash('File not found')
+        return redirect(url_for('index'))
     return send_from_directory(app.config['UPLOAD_FOLDER'], safe_filename)
 
 if __name__ == '__main__':
