@@ -39,5 +39,21 @@ http://localhost:5000
 
 4. View your uploaded files in the list below the upload form
 
+### Environment Variables
+
+You can customize the application behavior using these environment variables:
+
+- `SECRET_KEY`: Flask secret key for session management (auto-generated if not set)
+- `FLASK_DEBUG`: Set to `true` to enable debug mode (default: `false`)
+- `FLASK_HOST`: Host to bind the server to (default: `127.0.0.1`)
+- `FLASK_PORT`: Port to run the server on (default: `5000`)
+
+Example:
+```bash
+export FLASK_HOST=0.0.0.0
+export FLASK_PORT=8080
+python app.py
+```
+
 ### Security Note
 The uploaded files are stored in the `uploads/` directory (excluded from git). Make sure to properly secure your server if deploying to production.
