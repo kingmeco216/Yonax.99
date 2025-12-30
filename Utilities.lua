@@ -47,7 +47,7 @@ function Utilities.setJumpPower(power)
     if player.Character and player.Character:FindFirstChild("Humanoid") then
         local humanoid = player.Character.Humanoid
         -- Use JumpHeight if available (newer), otherwise fall back to JumpPower
-        if humanoid:FindFirstChild("JumpHeight") or humanoid.UseJumpHeight then
+        if humanoid.UseJumpHeight then
             humanoid.JumpHeight = power
         else
             humanoid.JumpPower = power
